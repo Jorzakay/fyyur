@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, FieldList, FormField, IntegerField
 from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms.fields.html5 import TimeField
+
 
 class ShowForm(Form):
     artist_id = StringField(
@@ -13,8 +15,9 @@ class ShowForm(Form):
     start_time = DateTimeField(
         'start_time',
         validators=[DataRequired()],
-        default= datetime.today()
+        default=datetime.today()
     )
+
 
 class VenueForm(Form):
     name = StringField(
@@ -120,12 +123,19 @@ class VenueForm(Form):
         'website_link'
     )
 
-    seeking_talent = BooleanField( 'seeking_talent' )
+    seeking_talent = BooleanField('seeking_talent')
 
     seeking_description = StringField(
         'seeking_description'
     )
 
+
+class ArtistAvailabilityForm(Form):
+    id = IntegerField()
+    day = SelectField(
+        choices=[(None, "---"), ('1', 'Monday'), ('2', 'Tuesday'), ('3', 'Wednesday')])
+    time_from = TimeField()
+    time_to = TimeField()
 
 
 class ArtistForm(Form):
@@ -221,19 +231,21 @@ class ArtistForm(Form):
             ('Soul', 'Soul'),
             ('Other', 'Other'),
         ]
-     )
+    )
     facebook_link = StringField(
         # TODO implement enum restriction
         'facebook_link', validators=[URL()]
-     )
+    )
 
     website_link = StringField(
         'website_link'
-     )
+    )
 
-    seeking_venue = BooleanField( 'seeking_venue' )
+    seeking_venue = BooleanField('seeking_venue')
 
     seeking_description = StringField(
-            'seeking_description'
-     )
+        'seeking_description'
+    )
 
+    availabilities = FieldList(
+        FormField(ArtistAvailabilityForm), min_entries=7)

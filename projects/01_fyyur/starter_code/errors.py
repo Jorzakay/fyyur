@@ -1,0 +1,2 @@
+class ArtistBooked(Exception):
+    pass
